@@ -23,6 +23,8 @@ int Fecha::vecesMuestF = 0;
 			dia = dd;
 			return;
 }
+
+
 void Fecha::muestraFecha()
 {
 	cout << "La fecha es(dia-mes-año): " << dia << "-" << mes << "-" << anio << endl;

@@ -21,6 +21,7 @@ PoligonoIrreg::PoligonoIrreg(double yy, double xx) : x(xx), y(yy)
 }
 
 void PoligonoIrreg::anadeVertice(double y, double x){
+	//cout << "Vertice" << endl;
 	v.push_back(Coordenada(x,y));
 	numVertices++;
 }
