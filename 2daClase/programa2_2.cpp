@@ -1,4 +1,7 @@
 #include "Fecha.h"
+#include <cstdlib>
+#include <iostream>
+using namespace std;
 
 int main()
 {
@@ -7,5 +10,8 @@ int main()
 	a.muestraFecha();
 	b.muestraFecha();
 	c.muestraFecha();
-	cout << "La fecha es(dia-mes-año): " << a.dia << "-" << a.mes << "-" << a::anio << endl;
+
+	//La sentencia mas abajo no es usada debido a que intenta llamar a un atributo
+	//privado
+	//cout << "La fecha es(dia-mes-año): " << a.dia << "-" << a.mes << "-" << a::anio << endl;
 }
