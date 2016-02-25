@@ -6,10 +6,10 @@ class Coordenada
 private:
 	double x;
 	double y;
+	double magnitud;
 public:
 	Coordenada(double = 0, double = 0);
 	double obtenerX();
 	double obtenerY();
 };
-#endif 
-
+#endif

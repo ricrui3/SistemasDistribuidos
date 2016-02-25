@@ -6,7 +6,7 @@
 #include "PoligonoIrreg.h"
 using namespace std;
 
-static int  numVec = 100000;
+static int  numVec = 1000000;
 
 int main( )
 {

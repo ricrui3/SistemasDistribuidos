@@ -3,25 +3,27 @@
 
 int Fecha::vecesMuestF = 0;
 
-		int Fecha::getVecesMuestF()
-		{
+int Fecha::getVecesMuestF()
+{
 			//return vecesMuestF;
-			return dia;
+	return dia;
 			//return mes;
 			//return anio;
-		}
-		Fecha::Fecha(int dd, int mm, int aaaa)
-		{
-			mes = mm;
-			dia = dd;
-			anio = aaaa;
-			}
-		void Fecha::inicializaFecha(int dd, int mm, int aaaa)
-		{
-			anio = aaaa;
-			mes = mm;
-			dia = dd;
-			return;
+}
+
+Fecha::Fecha(int dd, int mm, int aaaa)
+{
+	mes = mm;
+	dia = dd;
+	anio = aaaa;
+}
+
+void Fecha::inicializaFecha(int dd, int mm, int aaaa)
+{
+	anio = aaaa;
+	mes = mm;
+	dia = dd;
+	return;
 }
 
 
