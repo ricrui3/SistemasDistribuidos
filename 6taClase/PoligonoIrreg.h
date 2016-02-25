@@ -7,7 +7,6 @@ using namespace std;
 class PoligonoIrreg{
 	private:
 		vector<Coordenada> v;
-		std::vector<double> m;
 		double x;
 		double y;
 		static int numVertices;

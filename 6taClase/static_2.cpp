@@ -22,5 +22,8 @@ int main( )
 	polI.imprimeVertices();
 	std::cout << "" << std::endl;
 	polI.ordenaA();
+
+	std::cout << "" << std::endl;
+	polI.imprimeVertices();
 	return 0;
 }

@@ -1,15 +1,12 @@
 #include <iostream>
-#include <stdlib.h>	
+#include <stdlib.h>
 #include <math.h>
 #include "Coordenada.h"
 using namespace std;
 
 Coordenada::Coordenada(double yy, double xx) : x(xx), y(yy)
 {
-	//double r, theta;
-	
-	//x = xx*cos(yy);
-	//y =xx*sin(yy);
+	magnitud = sqrt(pow(yy,2) + pow(xx,2));
 }
 
 double Coordenada::obtenerX()
@@ -20,4 +17,9 @@ double Coordenada::obtenerX()
 double Coordenada::obtenerY()
 {
 	return y;
+}
+
+double Coordenada::obtenerMagnitud()
+{
+	return magnitud;
 }
