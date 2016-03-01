@@ -4,7 +4,7 @@
 using namespace std;
 
 int main(){
-	int i=0, MAX=10;
+	int i=0, MAX=1000000;
 	double seno, coseno, tangente, logaritmo, raiz;
 	while(i < MAX){
 		seno += sin(i);

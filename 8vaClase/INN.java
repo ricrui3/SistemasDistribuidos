@@ -7,20 +7,17 @@ public class INN {
         // TODO code application logic here
         String megaCadena="";
         String miniCadena="IPN";
-        
-        for (int i = 0; i <17576 ; i++) {
-            for(int j=0; j<3; j++){
+        int i = 0, j = 0;
+
+        for (i = 0; i <17576 ; i++) {
+            for(j = 0; j < 3; j++){
                 char aux=(char)((Math.random()*25)+65);
                 megaCadena+=aux;
             }
             megaCadena+=" ";
         }
         System.out.println(megaCadena.contains(miniCadena));
-        
-        
-    }
-    
-    
+    }    
 }
 
 

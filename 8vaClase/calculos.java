@@ -3,14 +3,14 @@ import java.util.*;
 public class calculos{
 
 public static void main(String[] args) {
-		int i=0, MAX=10;
-		double seno, coseno, tangente, logaritmo, raiz;
+		int i=0, MAX=1000000;
+		double seno = 0, coseno = 0, tangente = 0, logaritmo = 0, raiz = 0;
 		while(i < MAX){
-		seno += math.sin(i);
-		coseno += math.cos(i);
-		tangente += math.tan(i);
-		logaritmo += math.log(i);
-		raiz += math.sqrt(i);
+		seno += Math.sin(i);
+		coseno += Math.cos(i);
+		tangente += Math.tan(i);
+		logaritmo += Math.log(i);
+		raiz += Math.sqrt(i);
 		i++;
 	}
 }
