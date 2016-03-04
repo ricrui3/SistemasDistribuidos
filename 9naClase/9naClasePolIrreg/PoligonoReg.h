@@ -4,9 +4,9 @@
 class PoligonoReg:public PoligonoIrreg{
 	private:
 		double angle;
+		int numVertices;
 	public:
-		PoligonoReg();
-		PoligonoReg(double x, double y);
+		PoligonoReg(int = 3);
 		obtieneArea();
 };
 
