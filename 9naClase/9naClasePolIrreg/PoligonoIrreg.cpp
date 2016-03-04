@@ -27,7 +27,8 @@ void PoligonoIrreg::anadeVertice(double y, double x){
 }
 
 void PoligonoIrreg::imprimeVertices(){
+	cout << endl;
 	for(int i = 0; i < v.size(); i++){
-		cout << v[i].obtenerX() << " - " << v[i].obtenerY() << endl;
+		cout << v[i].obtenerY() << " - " << v[i].obtenerX() << endl;
 	}
 }

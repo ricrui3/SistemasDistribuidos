@@ -1,8 +1,9 @@
-all: static_1 static_2
-static_1: static_1.cpp PoligonoIrreg.o
-	g++ static_1.cpp PoligonoIrreg.o Coordenada.o -o static_1.out
-static_2: static_2.cpp PoligonoIrreg.o
-	g++ static_2.cpp PoligonoIrreg.o Coordenada.o -o static_2.out
+
+main: main.cpp PoligonoReg.o PoligonoIrreg.o
+	g++ main.cpp PoligonoReg.o PoligonoIrreg.o Coordenada.o -o main.out
+
+PoligonoReg: PoligonoReg.cpp PoligonoIrreg.o PoligonoReg.h
+	g++ PoligonoReg.cpp -c
 PoligonoIrreg.o: PoligonoIrreg.cpp Coordenada.o PoligonoIrreg.h
 	g++ PoligonoIrreg.cpp -c
 Coordenada.o: Coordenada.cpp Coordenada.h

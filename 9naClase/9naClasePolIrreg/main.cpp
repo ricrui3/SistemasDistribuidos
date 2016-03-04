@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <vector>
 #include <math.h>
-#include "Coordenada.h"
 #include "PoligonoReg.h"
 using namespace std;
 
@@ -11,22 +10,20 @@ static int  numVec = 1000000;
 int main( )
 {
 	int numVer = 0;
-	vector<PoligonoIrreg> polI;
-	PoligonoIrreg polIrrAux;
+	vector<PoligonoReg> polR;
+	std::vector<PoligonoReg>::iterator ipolR;
 
-	for(int i = 0; i < numVec; i++){
-		
-		polI.push_back(polIrrAux);
-		numVer = rand() % 100;
-		
-		for(int j = 0; j < numVer; j++){
-			polI[i].anadeVertice(j,numVer);
-		}
-
-	 	//cout << "vertices anadidos " << polI[i].getNumeroVertices() << endl;
+	for(int i = 3; i < 5; i++){
+		PoligonoReg polRegAux = PoligonoReg(i);
+		polR.push_back(polRegAux);
 
 	}
 
-	// poligonoIrreg.imprimeVertices();
+	for (ipolR = polR.begin(); ipolR < polR.end(); ++ipolR)
+	{
+		(*ipolR).imprimeVertices();
+	}
+
+	//PoligonoReg.imprimeVertices();
 	return 0;
 }
