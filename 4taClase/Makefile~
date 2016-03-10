@@ -1,6 +1,0 @@
-principal4: principal4.cpp rectangulo.o
-	g++ principal4.cpp rectangulo.o coordenada.o -o principal4
-rectangulo.o: rectangulo.cpp coordenada.o rectangulo.h
-	g++ rectangulo.cpp -c
-coordenada.o: coordenada.cpp coordenada.h
-	g++ coordenada.cpp -c
