@@ -1,30 +1,49 @@
+/* Librerias minimas para el servidor */
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <stdio.h>
 #include <netinet/in.h>
 #include <netdb.h>
-#include <strings.h>
-#include <string.h>
-#include <stdlib.h>
-#include <arpa/inet.h>
-#include <unistd.h>
-#include <iostream>
+//--------------------------------------
+#include <strings.h>    //bzero()
+#include <stdlib.h>     //rand(), atoi()
+#include <arpa/inet.h>  //inet_addr
+#include <unistd.h>     //close()
+#include <iostream>     //cout, std
 using namespace std;
+
+void arregloAleatorio(int array[], int tam);
 
 int puerto = 7200;
 
+// Para la correcta ejecucion de este archivo es necesario ejecutarlo de la
+// siguiente manera:
+//  ./cliente.out [Direccion ip] [tamaño del arreglo de numeros aleatorios]
+//  Ejemplo:
+//  ./cliente.out 127.0.0.1 50
+
 int main(int argc, char const *argv[]) {
 
-  struct sockaddr_in msg_to_server_addr, client_addr, msg_to_client;
-  socklen_t serlen;
   int s, n;
-  cout << argc << endl;
   int tam = atoi(argv[2]);
   int array[tam], num[tam], res[tam];
-  serlen = sizeof(msg_to_client);
+
+  // El socket creado no tiene ninguna direccion, se deja en 0 el protocolo para
+  //  dejarlo en manos del sistema
   s = socket(AF_INET, SOCK_DGRAM, 0);
 
-  // Llena el arreglo con los valores
+  // sockaddr_in es una estructura que almacena la direccion generica de un
+  //  socket, en este caso es el socket internet
+  struct sockaddr_in msg_to_server_addr, client_addr, msg_to_client;
+  //Longitud del tamaño del tamaño del paquete----
+  socklen_t serlen;
+  serlen = sizeof(msg_to_client);
+  //----------------------------------------------
+
+  //Llena de valores aleatorios el arreglo
+  //arregloAleatorio(array, tam);
+
+  // Llena e imprime el arreglo con los valores aleatorios
   cout << "\nEl arreglo de numeros aleatorios de tamaño " << tam
        << " es:" << endl;
   for (int i = 0; i < tam; ++i) {
@@ -74,4 +93,8 @@ int main(int argc, char const *argv[]) {
   // printf("2 + 5 = %d\n", res);
   close(s);
   return 0;
+}
+
+void arregloAleatorio(int array[], int tam){
+
 }
