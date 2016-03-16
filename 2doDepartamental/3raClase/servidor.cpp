@@ -1,23 +1,22 @@
+/* Librerias minimas para el cliente */
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <stdio.h>
 #include <netinet/in.h>
 #include <netdb.h>
-#include <strings.h>
-#include <string.h>
-#include <stdlib.h>
-#include <arpa/inet.h>
-#include <unistd.h>
+//--------------------------------------
+#include <string.h> //bzero()
+#include <stdlib.h> //qsort()
 #include <iostream>
 
 using namespace std;
 
-int compara(const void *a, const void *b) { return (*(int *)a - *(int *)b); }
-
+int compara(const void *a, const void *b);
+void imprimeMatriz(int array[], int tam);
 int puerto = 7200;
 
 int main(void) {
-  int tam = 0, tamBuff = 50;
+  int tamBuff = 70000;
   int num[tamBuff];
   int s, n;
   socklen_t clilen;
@@ -34,9 +33,9 @@ int main(void) {
   clilen = sizeof(msg_to_client_addr);
 
   while (1) {
-    n = recvfrom(s, (char *)num, tamBuff * sizeof(int), 0,
+    n = recvfrom(s, (char *)num, tamBuff, 0,
                  (struct sockaddr *)&msg_to_client_addr, &clilen);
-    tam = n / 4;
+    int tam = n / 4;
 
     cout << "\nTamanio de n: " << n << " equivalente a " << tam << " enteros"
          << endl;
@@ -44,9 +43,7 @@ int main(void) {
     // Imprime el arreglo con los valores desordenados
     cout << "El arreglo de numeros aleatorios de tamaño " << tam
          << " es:" << endl;
-    for (int i = 0; i < tam; ++i) {
-      cout << num[i] << " ";
-    }
+    imprimeMatriz(num,tam);
 
     /* envía la petición al cliente. La estructura msg_to_client_addr contiene
      * la dirección socket del cliente */
@@ -55,12 +52,17 @@ int main(void) {
     // Imprime el arreglo con los valores ordenados
     cout << "\nEl arreglo de numeros ordenados de tamaño " << tam
          << " es:" << endl;
-    for (int i = 0; i < tam; ++i) {
-      cout << num[i] << " ";
-    }
-    cout << "\n" << endl;
+    imprimeMatriz(num,tam);
 
     sendto(s, (char *)num, tam * sizeof(int), 0,
            (struct sockaddr *)&msg_to_client_addr, clilen);
   }
+}
+
+int compara(const void *a, const void *b) { return (*(int *)a - *(int *)b); }
+void imprimeMatriz(int array[], int tam) {
+  for (int i = 0; i < tam; ++i) {
+    cout << array[i] << " ";
+  }
+  cout << "\n" << endl;
 }

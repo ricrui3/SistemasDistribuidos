@@ -1,4 +1,4 @@
-/* Librerias minimas para el servidor */
+/* Librerias minimas para el cliente */
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <stdio.h>
@@ -13,6 +13,7 @@
 using namespace std;
 
 void arregloAleatorio(int array[], int tam);
+void imprimeMatriz(int array[], int tam);
 
 int puerto = 7200;
 
@@ -26,7 +27,7 @@ int main(int argc, char const *argv[]) {
 
   int s, n;
   int tam = atoi(argv[2]);
-  int array[tam], num[tam], res[tam];
+  int num[tam], res[tam];
 
   // El socket creado no tiene ninguna direccion, se deja en 0 el protocolo para
   //  dejarlo en manos del sistema
@@ -35,24 +36,20 @@ int main(int argc, char const *argv[]) {
   // sockaddr_in es una estructura que almacena la direccion generica de un
   //  socket, en este caso es el socket internet
   struct sockaddr_in msg_to_server_addr, client_addr, msg_to_client;
-  //Longitud del tamaño del tamaño del paquete----
+  // Longitud del tamaño del tamaño del paquete----
   socklen_t serlen;
   serlen = sizeof(msg_to_client);
   //----------------------------------------------
 
-  //Llena de valores aleatorios el arreglo
-  //arregloAleatorio(array, tam);
+  // Llena de valores aleatorios el arreglo
+  arregloAleatorio(num, tam);
 
-  // Llena e imprime el arreglo con los valores aleatorios
+  // Imprime el arreglo con los valores aleatorios
   cout << "\nEl arreglo de numeros aleatorios de tamaño " << tam
        << " es:" << endl;
-  for (int i = 0; i < tam; ++i) {
-    array[i] = rand() % 100;
-    cout << array[i] << " ";
-  }
-  cout << endl;
+  imprimeMatriz(num, tam);
 
-  /* rellena la dirección del servidor */
+  /*Rellena la dirección del servidor */
   bzero((char *)&msg_to_server_addr, sizeof(msg_to_server_addr));
   msg_to_server_addr.sin_family = AF_INET;
   cout << "La direccion ip que ingreso es: " << argv[1] << endl;
@@ -68,9 +65,6 @@ int main(int argc, char const *argv[]) {
    * asignarle uno */
   client_addr.sin_port = htons(0);
   bind(s, (struct sockaddr *)&client_addr, sizeof(client_addr));
-  for (int i = 0; i < tam; ++i) {
-    num[i] = array[i];
-  }
 
   sendto(s, (char *)num, tam * sizeof(int), 0,
          (struct sockaddr *)&msg_to_server_addr, sizeof(msg_to_server_addr));
@@ -81,10 +75,8 @@ int main(int argc, char const *argv[]) {
   // Imprime el arreglo con los valores ordenados
   cout << "\nEl arreglo de numeros ordenados de tamaño " << tam
        << " es:" << endl;
-  for (int i = 0; i < tam; ++i) {
-    cout << res[i] << " ";
-  }
-  cout << "\n" << endl;
+      tam = n/4;
+  imprimeMatriz(res, tam);
 
   // u_short puer;
   // memcpy(&puer, &msg_to_client.sin_port, 2);
@@ -95,6 +87,15 @@ int main(int argc, char const *argv[]) {
   return 0;
 }
 
-void arregloAleatorio(int array[], int tam){
+void arregloAleatorio(int array[], int tam) {
+  for (int i = 0; i < tam; ++i) {
+    array[i] = rand();
+  }
+}
 
+void imprimeMatriz(int array[], int tam) {
+  for (int i = 0; i < tam; ++i) {
+    cout << array[i] << " ";
+  }
+  cout << endl;
 }
