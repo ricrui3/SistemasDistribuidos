@@ -17,21 +17,26 @@ int main(int argc, char const *argv[]) {
 
   struct sockaddr_in msg_to_server_addr, client_addr, msg_to_client;
   socklen_t serlen;
-  int s, res, i;
-  int tam = 20;
-  int array[tam], num[tam];
+  int s, n;
+  cout << argc << endl;
+  int tam = atoi(argv[2]);
+  int array[tam], num[tam], res[tam];
   serlen = sizeof(msg_to_client);
   s = socket(AF_INET, SOCK_DGRAM, 0);
 
   // Llena el arreglo con los valores
-  for (int i = 0; i < tam - 1; ++i) {
+  cout << "\nEl arreglo de numeros aleatorios de tamaño " << tam
+       << " es:" << endl;
+  for (int i = 0; i < tam; ++i) {
     array[i] = rand() % 100;
-    cout << array[i] << endl;
+    cout << array[i] << " ";
   }
+  cout << endl;
 
   /* rellena la dirección del servidor */
   bzero((char *)&msg_to_server_addr, sizeof(msg_to_server_addr));
   msg_to_server_addr.sin_family = AF_INET;
+  cout << "La direccion ip que ingreso es: " << argv[1] << endl;
   msg_to_server_addr.sin_addr.s_addr = inet_addr(argv[1]);
   msg_to_server_addr.sin_port = htons(puerto);
 
@@ -47,27 +52,26 @@ int main(int argc, char const *argv[]) {
   for (int i = 0; i < tam; ++i) {
     num[i] = array[i];
   }
-  
+
   sendto(s, (char *)num, tam * sizeof(int), 0,
          (struct sockaddr *)&msg_to_server_addr, sizeof(msg_to_server_addr));
 
   /* se bloquea esperando respuesta */
-  recvfrom(s, (char *)&res, sizeof(int), 0, (struct sockaddr *)&msg_to_client,
-           &serlen);
-
-  /* mostrado de la direccion ip */
-  unsigned char aux[4];
-  memcpy(aux, &msg_to_client.sin_addr.s_addr, 4);
-  for (i = 0; i < 4; i++) {
-    // aux[i]=ntohs(aux[i]);
-    printf("\nLa posicion %d tiene: %d,", i, aux[i]);
+  n = recvfrom(s, (char *)res, tam * sizeof(int), 0,
+               (struct sockaddr *)&msg_to_client, &serlen);
+  // Imprime el arreglo con los valores ordenados
+  cout << "\nEl arreglo de numeros ordenados de tamaño " << tam
+       << " es:" << endl;
+  for (int i = 0; i < tam; ++i) {
+    cout << res[i] << " ";
   }
+  cout << "\n" << endl;
 
-  u_short puer;
-  memcpy(&puer, &msg_to_client.sin_port, 2);
-  puer = ntohs(puer);
-  printf("\n El puerto es: %d\n", puer);
-  printf("2 + 5 = %d\n", res);
+  // u_short puer;
+  // memcpy(&puer, &msg_to_client.sin_port, 2);
+  // puer = ntohs(puer);
+  // printf("\n El puerto es: %d\n", puer);
+  // printf("2 + 5 = %d\n", res);
   close(s);
   return 0;
 }
