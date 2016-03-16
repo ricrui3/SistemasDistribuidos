@@ -13,7 +13,8 @@ using namespace std;
 
 int puerto = 7200;
 
-int main() {
+int main(int argc, char const *argv[]) {
+
   struct sockaddr_in msg_to_server_addr, client_addr, msg_to_client;
   socklen_t serlen;
   int s, res, i;
@@ -22,7 +23,7 @@ int main() {
   serlen = sizeof(msg_to_client);
   s = socket(AF_INET, SOCK_DGRAM, 0);
 
-  // llena el arreglo con los valores
+  // Llena el arreglo con los valores
   for (int i = 0; i < tam - 1; ++i) {
     array[i] = rand() % 100;
     cout << array[i] << endl;
@@ -31,7 +32,7 @@ int main() {
   /* rellena la dirección del servidor */
   bzero((char *)&msg_to_server_addr, sizeof(msg_to_server_addr));
   msg_to_server_addr.sin_family = AF_INET;
-  msg_to_server_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
+  msg_to_server_addr.sin_addr.s_addr = inet_addr(argv[1]);
   msg_to_server_addr.sin_port = htons(puerto);
 
   /* rellena la direcciòn del cliente*/
@@ -46,12 +47,15 @@ int main() {
   for (int i = 0; i < tam; ++i) {
     num[i] = array[i];
   }
+  
   sendto(s, (char *)num, tam * sizeof(int), 0,
          (struct sockaddr *)&msg_to_server_addr, sizeof(msg_to_server_addr));
 
   /* se bloquea esperando respuesta */
   recvfrom(s, (char *)&res, sizeof(int), 0, (struct sockaddr *)&msg_to_client,
            &serlen);
+
+  /* mostrado de la direccion ip */
   unsigned char aux[4];
   memcpy(aux, &msg_to_client.sin_addr.s_addr, 4);
   for (i = 0; i < 4; i++) {
