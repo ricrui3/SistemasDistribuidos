@@ -7,8 +7,17 @@
 #include <string.h>
 using namespace std;
 
+void imprimeDatos(char *datos) {
+  // cout << sizeof(datos) << endl;
+  while (*datos != '\0') {
+    cout << *datos << endl;
+    datos++;
+  }
+}
+
 PaqueteDatagrama::PaqueteDatagrama(char* d, unsigned int l, char* i, int p) {
   datos = new char[sizeof(d)];
+  imprimeDatos(d);
   datos = d;
   longitud = l;
   strcpy(ip, i);
@@ -35,3 +44,4 @@ void PaqueteDatagrama::inicializaPuerto(int p) { puerto = p; }
 void PaqueteDatagrama::inicializaIp(char* i) { strcpy(ip, i); }
 
 void PaqueteDatagrama::inicializaDatos(char* d) { datos = d; }
+
