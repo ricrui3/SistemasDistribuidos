@@ -18,7 +18,7 @@ void imprimeDatos(char *datos) {
 
 PaqueteDatagrama::PaqueteDatagrama(char* d, unsigned int l, char* i, int p) {
   datos = new char[sizeof(d)];
-  //datos = d;
+  datos = d;
   //longitud = l;
   //strcpy(ip, i);
   //puerto = p;
