@@ -10,10 +10,10 @@ int main(int argc, char const *argv[]) {
   PaqueteDatagrama paq1(a, sizeof(a), ip, 7200);
   // PaqueteDatagrama paq2(20);
 
-  // cout << paq1.obtieneDireccion() << endl;
-  // cout << paq1.obtieneLongitud() << endl;
-  // cout << paq1.obtienePuerto() << endl;
-  // imprimeDatos(paq1.obtieneDatos());
+  cout << paq1.obtieneDireccion() << endl;
+  cout << paq1.obtieneLongitud() << endl;
+  cout << paq1.obtienePuerto() << endl;
+  imprimeDatos(paq1.obtieneDatos());
 
   return 0;
 }

@@ -75,7 +75,7 @@ int main(int argc, char const *argv[]) {
   // Imprime el arreglo con los valores ordenados
   cout << "\nEl arreglo de numeros ordenados de tamaño " << tam
        << " es:" << endl;
-      tam = n/4;
+  tam = n / 4;
   imprimeMatriz(res, tam);
 
   // u_short puer;
