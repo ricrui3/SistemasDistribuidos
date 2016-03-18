@@ -1,10 +1,14 @@
 #include "PaqueteDatagrama.h"
 #include "SocketDatagrama.h"
 #include <iostream>
+/* Librerias minimas para el cliente */
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
+//--------------------------------------
+#include <unistd.h>     //close()
+#include <strings.h>    //bzero()
 using namespace std;
 
 SocketDatagrama::SocketDatagrama(int p){
