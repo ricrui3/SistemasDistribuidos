@@ -4,6 +4,8 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
+#include <string.h>
+
 using namespace std;
 
 PaqueteDatagrama::PaqueteDatagrama(const char * d, unsigned int l, const char* i, int p){

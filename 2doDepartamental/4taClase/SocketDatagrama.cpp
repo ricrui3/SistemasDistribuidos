@@ -6,6 +6,9 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
+#include <strings.h>    //bzero()
+#include <unistd.h>     //close()
+
 using namespace std;
 
 SocketDatagrama::SocketDatagrama(int p){

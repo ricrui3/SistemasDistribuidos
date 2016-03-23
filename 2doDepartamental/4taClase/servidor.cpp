@@ -10,7 +10,7 @@ using namespace std;
 
 int main(){
 	const char * msg;
-	PaqueteDatagrama uno("Hola2", 5, "192.168.1.69",REMOTE_PORT);
+	PaqueteDatagrama uno("Hola2", 5, "127.0.0.1",REMOTE_PORT);
 	PaqueteDatagrama dos(msg, BUFFSIZE, "192.168.1.69",LOCAL_PORT);
 	SocketDatagrama s(LOCAL_PORT);
 	int tam = s.recibe(dos);
