@@ -7,8 +7,8 @@
 using namespace std;
 
 PaqueteDatagrama::PaqueteDatagrama(const char * d, unsigned int l, const char* i, int p){
-	datos = new char[sizeof(d)];
-	memcpy(datos, d, size_t(sizeof(datos)));
+	datos = new char[strlen(d)];
+	memcpy(datos, d, size_t(strlen(d)));
 	longitud = l;
 	strcpy(ip, i);
 	puerto = p;
@@ -48,5 +48,7 @@ void PaqueteDatagrama::inicializaIp(char * i){
 }
 
 void PaqueteDatagrama::inicializaDatos(char * d){
-	datos = d;
+	datos = new char[strlen(d)];
+	memcpy(datos, d, size_t(strlen(d)));
+	longitud = strlen(d);
 }

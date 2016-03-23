@@ -24,7 +24,6 @@ SocketDatagrama::~SocketDatagrama(){
 
 int SocketDatagrama::recibe(PaqueteDatagrama &p){
 	int tam;
-	char * msn;
 	unsigned int n = sizeof(direccionForeanea);
 	if((tam=recvfrom(s,p.obtieneDatos(),p.obtieneLongitud(),0,(struct sockaddr *)&direccionForeanea,&n))<=0)
 		cout << "Hubo un error al recibir el mensaje.\n" << tam << endl;
@@ -38,6 +37,7 @@ int SocketDatagrama::envia(PaqueteDatagrama &p){
 	direccionForeanea.sin_family = AF_INET;
 	direccionForeanea.sin_addr.s_addr = inet_addr(p.obtieneDireccion());
 	direccionForeanea.sin_port = htons(p.obtienePuerto());
+	//cout << "--------------\n"<<p.obtieneDatos();
 	int tam;
 	if((tam = sendto(s,p.obtieneDatos(),p.obtieneLongitud(),0,(struct sockaddr *)&direccionForeanea,sizeof(direccionForeanea)))==-1)
 		cout << "Hubo un error al enviar el mensaje.\n";
