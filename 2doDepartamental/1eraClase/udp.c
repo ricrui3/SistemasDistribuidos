@@ -27,7 +27,7 @@ int main(void) {
     recvfrom(s, (char *)num, 2 * sizeof(int), 0,
              (struct sockaddr *)&msg_to_client_addr, &clilen);
     res = num[0] + num[1];
-
+    printf("%d\n", res);
     /* envía la petición al cliente. La estructura msg_to_client_addr contiene
      * la dirección socket del cliente */
     sendto(s, (char *)&res, sizeof(int), 0,
