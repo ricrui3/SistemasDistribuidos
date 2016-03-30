@@ -6,17 +6,17 @@
 #include <netinet/in.h>
 #include <netdb.h>
 
-class SocketDatagrama{
-public:
-	SocketDatagrama(int);
-	~SocketDatagrama();
-	int recibe(PaqueteDatagrama& p);
-	int envia(PaqueteDatagrama& p);
+class SocketDatagrama {
+ public:
+  SocketDatagrama(int);
+  ~SocketDatagrama();
+  int recibe(PaqueteDatagrama& p);
+  int envia(PaqueteDatagrama& p);
 
-private:
-	struct sockaddr_in direccionLocal;
-	struct sockaddr_in direccionForeanea;
-	int s;
+ private:
+  struct sockaddr_in direccionLocal;
+  struct sockaddr_in direccionForeanea;
+  int s;
 };
 
 #endif
