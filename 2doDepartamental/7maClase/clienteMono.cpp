@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
+#include <sys/socket.h>
 #include <unistd.h>
 #include <sys/wait.h>
 #include "PaqueteDatagrama.h"
@@ -27,34 +28,48 @@ int main(int argc, char const *argv[]) {
     exit(0);
   }
 
-  int numPeticiones = atoi(argv[1]);
-  int tam;
+  int numPeticiones2 = 0, numPeticiones = atoi(argv[1]);
+  int tam, j;
+  // bool petsMax = false;
   struct timeval;
-
-  mensaje men;
-  mensaje *menAux  = NULL;
+  int numSolTot = 0, numResp = 0;
+  float porcDatPerd;
+  mensaje *men = new mensaje;
+  mensaje *menAux = new mensaje;
   SocketDatagrama sckt(0);
-  PaqueteDatagrama envia((char *)&men, sizeof(men), (char *)argv[2],
+  PaqueteDatagrama envia((char *)&men, sizeof(struct mensaje), (char *)argv[2],
                          puerto);
   PaqueteDatagrama recibe(BUFSIZ);
 
-  sckt.setTimeOut(0, 500000);
-
+  sckt.setTimeOut(0, 200000);
   for (int i = 0; i < numPeticiones; ++i) {
-    men.secuencia = i + 1;
-    men.solicitud[0] = 3;
-    men.solicitud[1] = 4;
-    men.respuesta = 0;
-    sckt.envia(envia);
-    if ((tam = sckt.recibeTimeOut(recibe)) != -1) {
-      memcpy(menAux, recibe.obtieneDatos(), sizeof(mensaje));
-      cout << "Test" << endl;
-      cout << "Servidor encontrado en la direccion: "
-           << recibe.obtieneDireccion() << " la suma de "
-           << (*menAux).solicitud[0] << " " << (*menAux).solicitud[1]
-           << " es: " << (*menAux).respuesta << endl;
-      break;
+    numPeticiones2++;
+    for (j = 0; j < 7; j++) {
+      numSolTot++;
+      (*men).secuencia = j + 1;
+      (*men).solicitud[0] = rand() % 100;
+      (*men).solicitud[1] = rand() % 100;
+      (*men).respuesta = 0;
+      envia.inicializaDatos((char *)men);
+      // cout << (*men).solicitud[0] << "." << (*men).solicitud[0] << endl;
+      sckt.envia(envia);
+      if ((tam = sckt.recibeTimeOut(recibe)) != -1) {
+        numResp++;
+        memcpy(menAux, recibe.obtieneDatos(), sizeof(struct mensaje));
+        cout << "Servidor encontrado en la direccion: "
+             << recibe.obtieneDireccion() << " la suma de "
+             << (*menAux).solicitud[0] << " + " << (*menAux).solicitud[1]
+             << " es: " << (*menAux).respuesta << endl;
+        break;
+      }
     }
+    if (j == 7) break;
   }
-
+  cout << "El numero de peticiones fue: " << numPeticiones2 << endl;
+  cout << "El número de solicitudes totales hechas al servidor (incluyendo los "
+          "reenvíos): " << numSolTot << endl;
+  cout << "El número de solicitudes respondidas por el servidor: " << numResp
+       << endl;
+  porcDatPerd = 100 - (numResp * 100) / numSolTot;
+  cout << "Porcentaje de datagramas perdidos: " << porcDatPerd << endl;
 }
