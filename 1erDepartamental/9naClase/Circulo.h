@@ -1,5 +1,6 @@
 #ifndef Circulo_h_
 #define Circulo_h_
+#include "math.h"
 
 const double PI = acos(-1.0);  
 
