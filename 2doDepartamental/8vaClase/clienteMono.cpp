@@ -53,6 +53,8 @@ int main(int argc, char const *argv[]) {
   srtt = 0;
   rttvar = 3;
   RTO = srtt + 2 * rttvar;
+  cout << "--  " << RTO << " " << RTO-floor(RTO) << endl;
+  sckt.setTimeOut(RTO, RTO-floor(RTO));
 
   for (int i = 0; i < numPeticiones; ++i) {
     numPeticiones2++;
@@ -69,24 +71,41 @@ int main(int argc, char const *argv[]) {
       if ((tam = sckt.recibeTimeOut(recibe)) != -1) {
         gettimeofday(&tiempoFinal, NULL);
         timersub(&tiempoFinal, &inicial, &tiempoTotal);
-
-        long lalala = tiempoTotal.tv_usec + tiempoTotal.tv_sec * 1000000;
+        long double lalala =
+            tiempoTotal.tv_usec / float(1000000) + tiempoTotal.tv_sec;
         delta = lalala - srtt;
         srtt = srtt + 0.125 * delta;
         rttvar = rttvar + 0.25 * (absoluto(delta) - rttvar);
         RTO = srtt + 4 * rttvar;
-        cout << "lalala: " << lalala << " RTO :" << RTO << " delta: " << delta
+        cout << "RTT Medido: " << ceil(lalala) << "s "
+             << (ceil(lalala) - lalala) * 1000000 << "us delta: " << delta
              << " srtt: " << srtt << " rttvar " << rttvar << endl;
-
-        sckt.setTimeOut(ceill(RTO) / float(1000000),
-                        ceil(RTO) - ceill(RTO) / float(1000000));
+        cout << "RTO:  " << floor(RTO) << " micros: " << ceill((RTO-floor(RTO))*1000000)
+             << endl;
+        sckt.setTimeOut(RTO, ceill((RTO-floor(RTO))*1000000));
         numResp++;
         memcpy(menAux, recibe.obtieneDatos(), sizeof(struct mensaje));
         cout << "Servidor encontrado en la direccion: "
              << recibe.obtieneDireccion() << " la suma de "
              << (*menAux).solicitud[0] << " + " << (*menAux).solicitud[1]
-             << " es: " << (*menAux).respuesta << endl;
+             << " es: " << (*menAux).respuesta << endl << endl;
         break;
+      } else {
+        gettimeofday(&tiempoFinal, NULL);
+        timersub(&tiempoFinal, &inicial, &tiempoTotal);
+        long double lalala =
+            tiempoTotal.tv_usec / float(1000000) + tiempoTotal.tv_sec;
+        delta = lalala - srtt;
+        srtt = srtt + 0.125 * delta;
+        rttvar = rttvar + 0.25 * (absoluto(delta) - rttvar);
+        RTO = srtt + 4 * rttvar;
+        cout << "RTT Medido: " << ceil(lalala) << "s "
+             << (ceil(lalala) - lalala) * 1000000 << "us delta: " << delta
+             << " srtt: " << srtt << " rttvar " << rttvar << endl << endl;
+        
+        cout << "RTO:  " <<  floor(RTO) << " micros: " << ceill((RTO-floor(RTO))*1000000)
+             << endl;
+        sckt.setTimeOut(RTO, ceill((RTO-floor(RTO))*1000000));
       }
     }
     if (j == 7) break;
