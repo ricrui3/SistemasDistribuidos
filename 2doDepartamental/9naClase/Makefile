@@ -1,5 +1,10 @@
 CFLAGS = -Wall -Werror -g
 
+all: cliente2 cliente
+
+cliente2: cliente2.cpp Archivo.o SocketDatagrama.o PaqueteDatagrama.o 
+	g++ cliente2.cpp Archivo.o SocketDatagrama.o PaqueteDatagrama.o  $(CFLAGS) -o cliente2.out -O2
+
 cliente: cliente.cpp Archivo.o SocketDatagrama.o PaqueteDatagrama.o 
 	g++ cliente.cpp Archivo.o SocketDatagrama.o PaqueteDatagrama.o  $(CFLAGS) -o cliente.out -O2
 
