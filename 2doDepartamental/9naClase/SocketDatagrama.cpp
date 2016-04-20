@@ -10,8 +10,12 @@
 #include <math.h>
 
 using namespace std;
+long double SocketDatagrama::RTO;
+long double SocketDatagrama::srtt;
+long double SocketDatagrama::rttvar;
+long double SocketDatagrama::delta;
 
-// long double absoluto(long double valor);
+long double absoluto(long double valor);
 
 SocketDatagrama::SocketDatagrama(int puertoL) {
   s = socket(AF_INET, SOCK_DGRAM, 0);
@@ -23,9 +27,9 @@ SocketDatagrama::SocketDatagrama(int puertoL) {
   direccionLocal.sin_port = htons(puertoL);
   bind(s, (struct sockaddr *)&direccionLocal, sizeof(direccionLocal));
   timeOut = false;
-  // srtt = 0;
-  // rttvar = 3;
-  // RTO = srtt + 2 * rttvar;
+  srtt = 0;
+  rttvar = 3;
+  RTO = srtt + 2 * rttvar;
 }
 
 SocketDatagrama::~SocketDatagrama() { close(s); }
@@ -79,27 +83,39 @@ void SocketDatagrama::setTimeOut(time_t segundos, suseconds_t microsegundos) {
   setsockopt(s, SOL_SOCKET, SO_RCVTIMEO, (char *)&timer, sizeof(timer));
 }
 
-// void SocketDatagrama::setTimeOut(time_t RTT) {
-//   srtt = RTT;
-//   delta = RTT - srtt;
-//   srtt = srtt + 0.125 * delta;
-//   rttvar = rttvar + 0.25 * (absoluto(delta) - rttvar);
-//   RTO = srtt + 4 * rttvar;
-//   cout << RTO << endl;
-//   timer.tv_usec = RTO - ceill(RTO);
-//   timeOut = true;
-//   setsockopt(s, SOL_SOCKET, SO_RCVTIMEO, (char *)&timer, sizeof(timer));
-// }
+void SocketDatagrama::setTimeOut(timeval RTT) {
+  // delta = lalala - srtt;
+  //       srtt = srtt + 0.125 * delta;
+  //       rttvar = rttvar + 0.25 * (absoluto(delta) - rttvar);
+  //       RTO = srtt + 4 * rttvar;
+  //       cout << "RTT Medido: " << ceil(lalala) << "s "
+  //            << (ceil(lalala) - lalala) * 1000000 << "us delta: " << delta
+  //            << " srtt: " << srtt << " rttvar " << rttvar << endl;
+  //       cout << "RTO:  " << floor(RTO)
+  //            << " micros: " << ceill((RTO - floor(RTO)) * 1000000) << endl;
+  //srtt = RTT;
+  long double lalala =
+            RTT.tv_usec / float(1000000) + RTT.tv_sec;
+  delta = lalala - srtt;
+  srtt = srtt + 0.125 * delta;
+  rttvar = rttvar + 0.25 * (absoluto(delta) - rttvar);
+  RTO = srtt + 4 * rttvar;
+  cout << RTO << endl;
+  timer.tv_sec =floor(RTO);
+  timer.tv_usec =ceill((RTO - floor(RTO)) * 1000000);
+  timeOut = true;
+  setsockopt(s, SOL_SOCKET, SO_RCVTIMEO, (char *)&timer, sizeof(timer));
+}
 
 void SocketDatagrama::unsetTimeOut() {
   timeOut = false;
   setsockopt(s, SOL_SOCKET, SO_RCVTIMEO, NULL, sizeof(timer));
 }
 
-// long double absoluto(long double valor) {
-//   if (valor >= 0) {
-//     return valor;
-//   } else {
-//     return -valor;
-//   }
-// }
+long double absoluto(long double valor) {
+  if (valor >= 0) {
+    return valor;
+  } else {
+    return -valor;
+  }
+}

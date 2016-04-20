@@ -18,7 +18,7 @@ class SocketDatagrama {
   // Envía un paquete tipo datagrama desde este socket
   int envia(PaqueteDatagrama& p);
   void setTimeOut(time_t segundos, suseconds_t microsegundos);
-  void setTimeOut(time_t RTT);
+  void setTimeOut(timeval RTT);
   void unsetTimeOut();
 
  private:
@@ -27,10 +27,10 @@ class SocketDatagrama {
   int s;  // ID socket
   struct timeval timer;
   bool timeOut;
-  // static long double RTO;
-  // static long double srtt;
-  // static long double rttvar;
-  // static long double delta;
+  static long double RTO;
+  static long double srtt;
+  static long double rttvar;
+  static long double delta;
 };
 
 #endif
