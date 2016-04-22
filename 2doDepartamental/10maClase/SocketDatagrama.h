@@ -5,6 +5,8 @@
 #include <sys/socket.h>
 #include <sys/time.h>
 #include <netinet/in.h>
+#include <unistd.h>
+#include <signal.h>
 
 class SocketDatagrama {
  public:
@@ -29,6 +31,7 @@ class SocketDatagrama {
   int s;  // ID socket
   struct timeval timer;
   bool timeOut;
+  struct sigaction act;
   static long double RTO;
   static long double srtt;
   static long double rttvar;

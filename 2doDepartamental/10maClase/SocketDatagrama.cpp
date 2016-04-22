@@ -8,6 +8,7 @@
 #include <iostream>
 #include <errno.h>
 #include <math.h>
+#include <signal.h>
 
 using namespace std;
 long double SocketDatagrama::RTO;
@@ -17,15 +18,25 @@ long double SocketDatagrama::delta;
 
 long double absoluto(long double valor);
 
+void tratar_alarma(int sig){
+  cout << "Alarma activada" << endl;
+}
+
 SocketDatagrama::SocketDatagrama(int puertoL) {
   s = socket(AF_INET, SOCK_DGRAM, 0);
   bzero((char *)&direccionLocal, sizeof(struct sockaddr_in));
   bzero((char *)&direccionForanea, sizeof(struct sockaddr_in));
 
+  act.sa_handler = tratar_alarma;
+  act.sa_flags = 0;
+  sigaction(SIGALRM, &act, NULL);
+
   direccionLocal.sin_family = AF_INET;
   direccionLocal.sin_addr.s_addr = INADDR_ANY;
   direccionLocal.sin_port = htons(puertoL);
   bind(s, (struct sockaddr *)&direccionLocal, sizeof(direccionLocal));
+
+
   timeOut = false;
   srtt = 0;
   rttvar = 3;
@@ -80,7 +91,12 @@ void SocketDatagrama::setTimeOut(time_t segundos, suseconds_t microsegundos) {
   timer.tv_sec = segundos;
   timer.tv_usec = microsegundos;
   timeOut = true;
-  setsockopt(s, SOL_SOCKET, SO_RCVTIMEO, (char *)&timer, sizeof(timer));
+  if(segundos != 0){
+    alarm(segundos);
+  } else{
+    ualarm(microsegundos, 0);
+  }
+  //setsockopt(s, SOL_SOCKET, SO_RCVTIMEO, (char *)&timer, sizeof(timer));
 }
 
 void SocketDatagrama::setTimeOut(timeval RTT) {
@@ -104,7 +120,11 @@ void SocketDatagrama::setTimeOut(timeval RTT) {
   timer.tv_sec =floor(RTO);
   timer.tv_usec =ceill((RTO - floor(RTO)) * 1000000);
   timeOut = true;
-  setsockopt(s, SOL_SOCKET, SO_RCVTIMEO, (char *)&timer, sizeof(timer));
+  if(floor(RTO) != 0){
+    alarm(floor(RTO));
+  } else{
+    ualarm(ceill((RTO - floor(RTO)) * 1000000), 0);
+  }
 }
 
 void SocketDatagrama::unsetTimeOut() {
