@@ -29,8 +29,7 @@ int main(int argc, char const *argv[]) {
   struct timeval inicial;
   struct timeval tiempoFinal;
   struct timeval tiempoTotal;
-  bool paqueteRecibido = false;
-  bool paqueteInvalido = true;
+  struct timeval auxT;
   messageCS *messCS = new messageCS;
   messageSC *messSC = new messageSC;
   SocketDatagrama sckt(0);
@@ -49,44 +48,48 @@ int main(int argc, char const *argv[]) {
     for (j = 0; j < 7; j++) {
       numSolTot++;
       // cout << (*men).solicitud[0] << "." << (*men).solicitud[0] << endl;
+      gettimeofday(&inicial, NULL);
+      // cout << "\ninicial sec: "<< inicial.tv_sec << " inicial usec: " <<
+      // inicial.tv_usec << endl;
+      auxT.tv_sec = inicial.tv_sec + floor(sckt.getRTO());
+      auxT.tv_usec =
+          inicial.tv_usec + (sckt.getRTO() - floor(sckt.getRTO())) * 1000000;
+      if (auxT.tv_usec >= 1000000) {
+        auxT.tv_sec++;
+        auxT.tv_usec -= 1000000;
+      }
+      // cout << "RTO: " << sckt.getRTO() << " SEC: " << auxT.tv_sec << " USEC:
+      // " << auxT.tv_usec << endl;
+      messSC->timestamp.tv_sec = auxT.tv_sec;
+      messSC->timestamp.tv_usec = auxT.tv_usec;
       envia.inicializaDatos((char *)messCS);
       sckt.envia(envia);
-      while(paqueteInvalido){
-        gettimeofday(&inicial, NULL);
-        if ((tam = sckt.recibeTimeOut(recibe)) != -1) {
-          paqueteRecibido = true;
-          gettimeofday(&tiempoFinal, NULL);
-          timersub(&tiempoFinal, &inicial, &tiempoTotal);
-          long trecepcion = tiempoFinal.tv_sec * 1000000 + tiempoFinal.tv_usec;
-          memcpy(messSC, recibe.obtieneDatos(), tam);
-          if (!(trecepcion <= messSC->timestamp)) {
-            paqueteInvalido=false;
-            sckt.setTimeOut(tiempoTotal);
-            numResp++;
-            cout << "Enviado" << endl;
-            offs = offs + messSC->count;
-            messCS->offset = offs;
-            cout << "offs: " << offs << endl;
-            archivo.escribe(messSC->data, messSC->count);
-            cout << "tamanio: " << messSC->count << endl << endl;
-            if (messSC->count < BUF_SIZE) {
-              final = false;
-            }
-          }
-          else{
-            paqueteInvalido=true;
-          }
-        } else {
-          paqueteRecibido = false;
-          gettimeofday(&tiempoFinal, NULL);
-          timersub(&tiempoFinal, &inicial, &tiempoTotal);
-          sckt.setTimeOut(tiempoTotal);
+      if ((tam = sckt.recibe(recibe)) != -1) {
+        gettimeofday(&tiempoFinal, NULL);
+        memcpy(messSC, recibe.obtieneDatos(), tam);
+        if (timercmp(&messSC->timestamp, &tiempoFinal, <= )) {
+          continue;
         }
-      }
-      if (paqueteRecibido) {
+        timersub(&tiempoFinal, &inicial, &tiempoTotal);
+
+        sckt.setTimeOut(tiempoTotal);
+        numResp++;
+        cout << "Enviado" << endl;
+        offs = offs + messSC->count;
+        messCS->offset = offs;
+        cout << "offs: " << offs << endl;
+        archivo.escribe(messSC->data, messSC->count);
+        cout << "tamanio: " << messSC->count << endl << endl;
+        if (messSC->count < BUF_SIZE) {
+          final = false;
+        }
         break;
+      } else {
+        gettimeofday(&tiempoFinal, NULL);
+        timersub(&tiempoFinal, &inicial, &tiempoTotal);
+        sckt.setTimeOut(tiempoTotal);
       }
     }
-    if (j == 7) break;
+    // if (j == 7) break;
   }
 }

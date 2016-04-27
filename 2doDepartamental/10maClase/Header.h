@@ -1,4 +1,6 @@
 #include <inttypes.h>
+#include <unistd.h>
+#include <sys/time.h>
 
 /* Definiciones necesarias para los clientes y el servidor de archivos */
 #define MAX_PATH 255   // Longitud máxima en el nombre de un archivo
@@ -27,7 +29,7 @@ struct messageCS {
   uint32_t offset;      // Lugar del archivo donde se debe iniciar la lectura o
                         // escritura, enviado por el cliente
   char name[MAX_PATH];  // Nombre del archivo sobre el cual se opera
-  uint32_t timestamp;
+  struct timeval timestamp;
 };
 
 /* Formato del mensaje que viaja del servidor hacia el cliente */
@@ -36,5 +38,5 @@ struct messageSC {
                    // enviado por el cliente en WRITE
   uint32_t result;  // Código de error devuelto por el servidor
   char data[BUF_SIZE];  // Datos del archivo
-  uint32_t timestamp;
+  struct timeval timestamp;
 };
