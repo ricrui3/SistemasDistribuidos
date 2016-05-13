@@ -5,6 +5,13 @@
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
+#include <arpa/inet.h>
+
+//###################################
+//#                                 #
+//#            Servidor             #
+//#                                 #
+//###################################
 
 /* Puerto donde reside nuestro servicio de tiempo */
 #define PUERTO 50000
