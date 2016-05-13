@@ -1,11 +1,11 @@
 #include <sys/types.h>
 #include <sys/socket.h>
-#include <linux/in.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
 #include <arpa/inet.h>
+#include <netinet/in.h>
 
 //###################################
 //#                                 #
@@ -15,41 +15,62 @@
 
 /* Puerto donde reside nuestro servicio de tiempo */
 #define PUERTO 50000
-/* Tamaño del buffer de recepción de datos */
-#define TAMBUF 32
+
+#define BUFFSIZE 1
 
 int main(void) {
-  int s, c, n;
+  int sckt, c, n;
+  int clientLen;
+  FILE *file;
   struct sockaddr_in sa;
-  char buf[TAMBUF];
+  struct sockaddr_in clSockAddr;
+  char buffer[BUFFSIZE];
   time_t t;
 
-  if ((s = socket(PF_INET, SOCK_STREAM, 0)) < 0) {
+  // Se crea el socket
+  if ((sckt = socket(PF_INET, SOCK_STREAM, 0)) < 0) {
     perror("socket");
     exit(1);
   }
   sa.sin_family = AF_INET;
   sa.sin_port = htons(PUERTO);
   sa.sin_addr.s_addr = htonl(INADDR_ANY);
-  if (bind(s, (struct sockaddr *)&sa, sizeof(sa)) < 0) {
+
+  if (bind(sckt, (struct sockaddr *)&sa, sizeof(sa)) < 0) {
     perror("bind");
-    exit(1);
+    close(sckt);
+    exit(EXIT_FAILURE);
   }
-  if (listen(s, 5) < 0) {
+
+  if (listen(sckt, 5) < 0) {
     perror("listen");
-    exit(1);
+    close(sckt);
+    exit(EXIT_FAILURE);
   }
+
   do {
-    if ((c = accept(s, NULL, 0)) < 0) {
+    int recibido = -1;
+    clientLen = sizeof(clSockAddr);
+
+    if ((c = accept(sckt, (struct sockaddr *)&clSockAddr, &clientLen)) < 0) {
       perror("accept");
       exit(1);
     }
+
+    /*Se configura la dirección del cliente*/
+    clSockAddr.sin_family = AF_INET;
+    clSockAddr.sin_port = htons(PUERTO);
+    printf("Cliente conectado: %s\n", inet_ntoa(clSockAddr.sin_addr));
+
     t = time(NULL);
-    n = sprintf(buf, "%s", ctime(&t));
-    if (write(c, buf, n) < 0) {
-      perror("write");
-      exit(1);
-    }
-    close(c);
+    n = sprintf(buffer, "%s", ctime(&t));
+    /*Se abre el archivo para escritura*/
+    file = fopen("archivoRecibido.mp4", "wb");
+    while ((recibido = recv(sckt, buffer, BUFFSIZE, 0)) > 0) {
+      printf("%s", buffer);
+      fwrite(buffer, sizeof(char), 1, file);
+    }  // Termina la recepción del archivo
+    fclose(file);
   } while (1);
+    close(c);
 }

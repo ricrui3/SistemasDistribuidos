@@ -1,6 +1,5 @@
 #include <sys/types.h>
 #include <sys/socket.h>
-#include <linux/in.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -12,18 +11,33 @@
 //#                                 #
 //###################################
 
-
-/* Direccion IP del servidor de tiempo */
-#define HOST "127.0.0.1"
+#define BUFFSIZE 1
 /* Puerto donde reside el servicio */
 #define PUERTO 50000
-/* Tamaño del buffer de recepcion de datos */
-#define TAMBUF 32
 
-int main(void) {
+int main(int argc, char const *argv[]){
   int s, n;
+  int sockLen;
   struct sockaddr_in sa;
-  char buf[TAMBUF];
+  char buffer[BUFFSIZE];
+  FILE *archivo;
+
+  /* Direccion IP del servidor de tiempo */
+  char* host = (char*) argv[2];
+
+  if(argc < 3){
+    perror("El programa se ejectuta de la siguiente manera:\n./clientFiles <archivo a enviar> <direccionIP del servidor>");
+    exit(EXIT_FAILURE);
+  }
+
+  /*Se abre el archivo a enviar*/
+  archivo = fopen(argv[1], "rb");
+
+  /*Se verifica la integridad del archivo*/
+  if(!archivo){
+    perror("Error al abrir el archivo");
+    exit(EXIT_FAILURE);
+  }
 
   //Abre un socket
   if ((s = socket(PF_INET, SOCK_STREAM, 0)) < 0) {
@@ -36,19 +50,30 @@ int main(void) {
   sa.sin_port = htons(PUERTO);
 
   //Convierte una direccion ipv4 a notacion binaria
-  if (!inet_aton(HOST, &sa.sin_addr)) {
+  if (!inet_aton(host, &sa.sin_addr)) {
     perror("inet_aton");
     exit(1);
   }
 
+  sockLen = sizeof(sa);
 
   if (connect(s, (struct sockaddr *)&sa, sizeof(sa)) < 0) {
     perror("connect");
+    close(s);
     exit(1);
   }
 
+  printf("Se ha conectado con el servidor:%s\n",(char *)inet_ntoa(sa.sin_addr));
+
+  /*Se envia el archivo*/
+  while(!feof(archivo)){
+    fread(buffer,sizeof(char),BUFFSIZE,archivo);
+    if(send(s,buffer,BUFFSIZE,0) == -1)
+      perror("Error al enviar el arvhivo:");
+  }
+
   //Lee la respuesta del servidor
-  if ((n = read(s, buf, TAMBUF)) < 0) {
+  if ((n = read(s, buffer, BUFFSIZE)) < 0) {
     perror("read");
     exit(1);
   }
@@ -57,7 +82,7 @@ int main(void) {
   close(s);
 
   //Escribe en consola la respuesta del socket
-  write(STDOUT_FILENO, buf, n);
+  write(STDOUT_FILENO, buffer, n);
 
   exit(0);
 }
