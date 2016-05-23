@@ -39,7 +39,6 @@ int main(int argc, char *argv[]){
 	int SocketServerFD;
 	int SocketClientFD;
 	int clientLen;
-	int serverLen;
 	direccIP = malloc(20);
 
 	/*Verifica que el número de parametros sea el correcto*/

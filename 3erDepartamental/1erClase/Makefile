@@ -9,4 +9,4 @@ codInternet1: codInternet1.c
 	gcc codInternet1.c -o codInternet1.out
 
 codInternet2: codInternet2.c
-	gcc codInternet2.c -o codInternet2.out
+	gcc codInternet2.c -o codInternet2.out 
